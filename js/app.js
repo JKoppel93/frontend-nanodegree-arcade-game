@@ -20,41 +20,9 @@ Enemy.prototype.update = function(dt) {
   // all computers.
   this.x = (this.x + this.speed); // x coordinate multiplied by speed
   this.y = this.row * 83; // y coordinate
-  checkCollisions(); // check for collisions with player
-  checkResults(); // check for win/loss
 
   if (this.x > 6 * 83) { // if enemy goes off-screen
     this.initialize();
-  }
-
-  // Overlay text
-
-  if (player.canMove === false && player.y >= 83) { // if player loses
-    ctx.font = "108px Impact";
-    ctx.fillStyle = "red";
-    ctx.lineWidth = 3;
-    ctx.textAlign = "center";
-    ctx.fillText("GAME OVER", 250, 700);
-    ctx.strokeText("GAME OVER", 250, 700);
-
-    ctx.font = "bold 36px Courier New";
-    ctx.fillStyle = "black";
-    ctx.fillText("Press Enter to restart", 250, 35);
-
-    player.result = false; // result is game over
-  } else if (player.canMove === false && player.y < 83) { // if player wins
-    ctx.font = "108px Impact";
-    ctx.fillStyle = "green";
-    ctx.lineWidth = 3;
-    ctx.textAlign = "center";
-    ctx.fillText("VICTORY", 250, 700);
-    ctx.strokeText("VICTORY", 250, 700);
-
-    ctx.font = "bold 36px Courier New";
-    ctx.fillStyle = "black";
-    ctx.fillText("Press Enter to restart", 250, 35);
-
-    player.result = true; // result is victory
   }
 };
 
@@ -81,7 +49,7 @@ var Player = function() {
   this.initialize();
   this.sprite = "images/char-boy.png";
   this.win = 0; // player win count
-  this.lose = 0; // player loss count ***CURRENTLY BUGGED***
+  this.lose = 0; // player loss count
 };
 
 Player.prototype.update = function(dt) {
@@ -89,10 +57,46 @@ Player.prototype.update = function(dt) {
     this.x = this.col * 101; // x coordinate
     this.y = this.row * 83; // y coordinate
     checkCollisions(); // check for collisions with player
+    checkResults(); // check and display win/loss
   }
 
   if (this.y < 83) { // if player gets to water
     this.canMove = false; // game is over
+  }
+
+  // Overlay text
+
+  if (this.canMove === false && this.y >= 83) { // if player loses
+    ctx.font = "108px Impact";
+    ctx.fillStyle = "red";
+    ctx.lineWidth = 3;
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", 250, 700);
+    ctx.strokeText("GAME OVER", 250, 700);
+
+    ctx.font = "bold 36px Courier New";
+    ctx.fillStyle = "black";
+    ctx.fillText("Press Enter to restart", 250, 35);
+
+    this.result = false; // result is game over
+  } else if (this.canMove === false && this.y < 83) { // if player wins
+    ctx.font = "108px Impact";
+    ctx.fillStyle = "green";
+    ctx.lineWidth = 3;
+    ctx.textAlign = "center";
+    ctx.fillText("VICTORY", 250, 700);
+    ctx.strokeText("VICTORY", 250, 700);
+
+    ctx.font = "bold 36px Courier New";
+    ctx.fillStyle = "black";
+    ctx.fillText("Press Enter to restart", 250, 35);
+
+    this.result = true; // result is victory
+  }
+
+  if (this.canMove === false && this.end === true) { // will run when enter key is pressed
+    this.initialize();
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clear any overlay text
   }
 };
 
@@ -106,7 +110,7 @@ Player.prototype.initialize = function() {
     if (this.result === true)
       this.win++; // wins++
     else if (this.result === false)
-      this.lose++; // losses++ ***CURRENTLY BUGGED***
+      this.lose++; // losses++
   }
   this.col = 2;
   this.row = 5;
@@ -158,11 +162,6 @@ var checkCollisions = function() {
       player.canMove = false;
     }
   }
-
-  if (player.canMove === false && player.end === true) { // will run when enter key is pressed
-    player.initialize();
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height); // clear any overlay text
-  }
 };
 
 var checkResults = function() { // check result of game
@@ -170,7 +169,7 @@ var checkResults = function() { // check result of game
   ctx.font = "bold 36px Courier New";
   ctx.textAlign = "center";
   ctx.fillText("Wins: " + player.win, 100, 750);
-  // ctx.fillText("Losses: " + player.lose,400,750);  ***CURRENTLY BUGGED***
+  ctx.fillText("Losses: " + player.lose,400,750);
 };
 
 
