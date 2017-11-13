@@ -52,12 +52,30 @@ var Player = function() {
   this.lose = 0; // player loss count
 };
 
+Player.prototype.checkCollisions  = function() {
+  for (i = 0; i < allEnemies.length; i++) {
+    if ((this.x > allEnemies[i].x - 50 && this.x < allEnemies[i].x - 50 + allEnemies[i].width) &&
+        (this.y > allEnemies[i].y - 50 && this.y < allEnemies[i].height + allEnemies[i].y - 50)) { // if enemy collides with player; 50 is used for bigger hitbox
+        player.canMove = false;
+    }
+  }
+};
+
+Player.prototype.checkResults = function() {
+  ctx.font = "bold 36px Courier New";
+  ctx.textAlign = "center";
+  ctx.fillText("Wins: " + player.win, 100, 750);
+  ctx.fillText("Losses: " + player.lose,400,750);
+}.bind(this);
+
+
+
 Player.prototype.update = function(dt) {
   if (this.canMove) {
     this.x = this.col * 101; // x coordinate
     this.y = this.row * 83; // y coordinate
-    checkCollisions(); // check for collisions with player
-    checkResults(); // check and display win/loss
+    this.checkCollisions(); // check for collisions with player
+    this.checkResults(); // check and display win/loss
   }
 
   if (this.y < 83) { // if player gets to water
@@ -152,26 +170,6 @@ Player.prototype.handleInput = function(move) {
       break;
   }
 };
-
-// GLOBAL METHODS
-
-var checkCollisions = function() {
-  for (i = 0; i < allEnemies.length; i++) {
-    if ((player.x > allEnemies[i].x - 50 && player.x < allEnemies[i].x - 50 + allEnemies[i].width) &&
-      (player.y > allEnemies[i].y - 50 && player.y < allEnemies[i].height + allEnemies[i].y - 50)) { // if enemy collides with player; 50 is used for bigger hitbox
-      player.canMove = false;
-    }
-  }
-};
-
-var checkResults = function() { // check result of game
-
-  ctx.font = "bold 36px Courier New";
-  ctx.textAlign = "center";
-  ctx.fillText("Wins: " + player.win, 100, 750);
-  ctx.fillText("Losses: " + player.lose,400,750);
-};
-
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
