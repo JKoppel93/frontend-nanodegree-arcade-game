@@ -1,3 +1,6 @@
+var TILE_WIDTH = 101,
+    TILE_HEIGHT = 83;
+
 // ENEMY OBJECTS AND METHODS
 
 var Enemy = function() {
@@ -56,7 +59,7 @@ Player.prototype.checkCollisions  = function() {
   for (i = 0; i < allEnemies.length; i++) {
     if ((this.x > allEnemies[i].x - 50 && this.x < allEnemies[i].x - 50 + allEnemies[i].width) &&
         (this.y > allEnemies[i].y - 50 && this.y < allEnemies[i].height + allEnemies[i].y - 50)) { // if enemy collides with player; 50 is used for bigger hitbox
-        player.canMove = false;
+        this.canMove = false;
     }
   }
 };
@@ -64,16 +67,16 @@ Player.prototype.checkCollisions  = function() {
 Player.prototype.checkResults = function() {
   ctx.font = "bold 36px Courier New";
   ctx.textAlign = "center";
-  ctx.fillText("Wins: " + player.win, 100, 750);
-  ctx.fillText("Losses: " + player.lose,400,750);
+  ctx.fillText("Wins: " + this.win, 100, 750);
+  ctx.fillText("Losses: " + this.lose,400,750);
 }.bind(this);
 
 
 
 Player.prototype.update = function(dt) {
   if (this.canMove) {
-    this.x = this.col * 101; // x coordinate
-    this.y = this.row * 83; // y coordinate
+    this.x = this.col * TILE_WIDTH; // x coordinate
+    this.y = this.row * TILE_HEIGHT; // y coordinate
     this.checkCollisions(); // check for collisions with player
     this.checkResults(); // check and display win/loss
   }
